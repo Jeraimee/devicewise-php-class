@@ -155,7 +155,7 @@ class DwApi {
 
   public function ping()
   {
-    return $this->post('api.ping', array());
+    return $this->post('api.ping', array(), false);
   }
 
 
@@ -182,7 +182,7 @@ class DwApi {
     }
 
     $params = array('applicationToken' => $applicationToken,
-                    'orgToken'         => $organizationToken);
+                    'organizationToken'         => $organizationToken);
 
     if ($this->post('api.authenticate', $params, false)) {
       return $this->response['sessionId'];
