@@ -206,7 +206,7 @@ class DwApi {
   /**
    * Returns details for a given gateway
    *
-   * @param string $cloudlinkId The CloudLINK ID if the gateway you want details about
+   * @param string $cloudlinkId The CloudLINK ID of the gateway you want details about
    * @return mixed
    */
 
