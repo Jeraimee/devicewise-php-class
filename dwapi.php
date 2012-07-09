@@ -218,6 +218,21 @@ class DwApi {
 
 
   /**
+   * Returns attributes of type system, user or both for a given gateway
+   *
+   * @params string $cloudlinkId The CloudLINK ID of the gateway you are listing attributes for
+   * @params string $type user, system or both - Attribute types
+   * @return mixed
+   */
+
+  public function attributeList($cloudlinkId, $type = 'both')
+  {
+    $params = array('cloudlinkId' => $cloudlinkId, 'type' => $type);
+    return $this->post('gateway.attribute.list', $params);
+  }
+
+
+  /**
    * Returns a list of all user operations on a given gateway
    *
    * @return mixed
