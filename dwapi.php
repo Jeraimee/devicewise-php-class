@@ -192,6 +192,31 @@ class DwApi {
 
 
   /**
+   * Returns a list of all available orgs for the user
+   *
+   * @return mixed
+   */
+
+  public function orgList()
+  {
+    return $this->post('user.org.list', array());
+  }
+
+
+  /**
+   * Sets the currently active org for the user
+   *
+   * @param string $orgId
+   * @see DwApi::orgList()
+   */
+
+  public function orgSet($orgId)
+  {
+    return $this->post('user.org.set', array('id' => $orgId));
+  }
+
+
+  /**
    * Returns a list of all gateways
    *
    * @return mixed
