@@ -170,19 +170,32 @@ class DwApi {
   public function auth($applicationToken = null, $organizationToken = null)
   {
     $applicationToken  = ($applicationToken)  ? $applicationToken  : $this->applicationToken;
-    $organizationToken = ($organizationToken) ? $organizationToken : $this->organizationToken;
+    if (is_array($organizationToken)) {
+      $username = $organizationToken['username'];
+      $password = $organizationToken['password'];
+    }
+    elseif (empty($organizationToken)) {
+      $organizationToken = $this->organizationToken;
+    }
 
     if (empty($applicationToken)) {
       trigger_error('No applicationToken has been given.');
       return false;
     }
-    if (empty($organizationToken)) {
-      trigger_error('No organizationToken has been given.');
+
+    if (empty($organizationToken) and empty($username) and empty($password)) {
+      trigger_error('No organizationToken, username or password have been given.');
       return false;
     }
 
-    $params = array('applicationToken' => $applicationToken,
-                    'organizationToken'         => $organizationToken);
+    $params = array('applicationToken' => $applicationToken);
+    if (isset($username) and isset($password)) {
+      $params['username'] = $username;
+      $params['password'] = $password;
+    }
+    else {
+      $params['organizationToken'] = $organizationToken;
+    }
 
     if ($this->post('api.authenticate', $params, false)) {
       return $this->response['sessionId'];
@@ -231,7 +244,7 @@ class DwApi {
   /**
    * Returns details for a given gateway
    *
-   * @param string $cloudlinkId The CloudLINK ID of the gateway you want details about
+   * @param string $cloudlinkId The CloudLINK ID if the gateway you want details about
    * @return mixed
    */
 
@@ -330,7 +343,7 @@ class DwApi {
     $params = array('cloudlinkId'       => $cloudlinkId,
                     'identifier'        => $remTrigger,
                     'notificationItems' => $_notificationVariables);
-    return $this->post('gateway.remtrigger.exec', $params, false);
+    return $this->post('gateway.remtrigger.exec', $params, true);
   }
 
 }
