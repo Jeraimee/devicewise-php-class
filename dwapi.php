@@ -343,7 +343,7 @@ class DwApi {
     $params = array('cloudlinkId'       => $cloudlinkId,
                     'identifier'        => $remTrigger,
                     'notificationItems' => $_notificationVariables);
-    return $this->post('gateway.remtrigger.exec', $params, true);
+    return $this->post('gateway.remtrigger.exec', $params);
   }
 
 
