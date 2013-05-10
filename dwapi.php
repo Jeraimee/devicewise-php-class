@@ -346,4 +346,42 @@ class DwApi {
     return $this->post('gateway.remtrigger.exec', $params, true);
   }
 
+
+  /**
+   * Sends a CloudSMS message to the given number or numbers
+   *
+   * @param mixed $to The number(s) to send the message to
+   * @param string $from The CloudSMS number to send the messsage from (must be one of your own CloudSMS numbers)
+   * @param string $message Message text to be sent
+   * @return mixed
+   */
+
+   public function cloudSMSSend($to, $from, $message)
+   {
+     $params = array('to'      => $to,
+                     'from'    => $from,
+                     'message' => $message);
+     return $this->post('cloudsms.send', $params);
+   }
+
+
+   /**
+    * Sends an email to one or many addresses via the Management Portal
+    *
+    * @param mixed $to The email(s) to send the message to
+    * @param string $from The email the message will be from (the email used must belong to a member of your organization)
+    * @param string $subject The subject line of the email
+    * @param string $body The body of the email
+    * @return mixed
+    */
+
+   public function emailSend($to, $from, $subject, $body)
+   {
+     $params = array('to'      => $to,
+                     'from'    => $from,
+                     'subject' => $subject,
+                     'body'    => $body);
+     return $this->post('email.send', $params);
+   }
+
 }
