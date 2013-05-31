@@ -57,13 +57,13 @@ class DwApi {
    * Holds the response data from the api call
    * @var array
    */
-  private $response = '';
+  public $response = '';
 
   /**
    * Holds errors returned by the api
    * @var array
    */
-  private $errors = array();
+  public $errors = array();
 
 
   public function __construct($options = array())
@@ -82,12 +82,14 @@ class DwApi {
    *
    * @param string $command The command to be ran
    * @param array $params The command params to be sent
-   * @param return bool If the post function should return the success or the response
+   * @param bool $return_response If the post function should return the response
    * @return mixed
    */
 
-  private function post($command, $params, $return = true)
+  private function post($command, $params, $return_response = true)
   {
+    $this->errors = $this->response = $this->lastReceived = '';
+
     $post_data = json_encode(array('auth' => $this->authArray($command),
                                    'data' => array('command' => $command,
                                                    'params'  => $params)));
@@ -108,13 +110,17 @@ class DwApi {
 
     if (!empty($response['data']['errorMessage'])) {
       $this->errors = $response['data']['errorMessage'];
-      return false;
     }
-    $this->response = $response['data']['params'];
-    if ($return) {
+
+    if (!empty($response['data']['params'])) {
+      $this->response = $response['data']['params'];
+    }
+
+    if ($return_response) {
       return $this->response;
     }
-    return true;
+
+    return (isset($response['data']['success'])) ? $response['data']['success']: false;
   }
 
 
@@ -169,7 +175,8 @@ class DwApi {
 
   public function auth($applicationToken = null, $organizationToken = null)
   {
-    $applicationToken  = ($applicationToken)  ? $applicationToken  : $this->applicationToken;
+    $applicationToken = ($applicationToken)? $applicationToken: $this->applicationToken;
+
     if (is_array($organizationToken)) {
       $username = $organizationToken['username'];
       $password = $organizationToken['password'];
@@ -189,6 +196,7 @@ class DwApi {
     }
 
     $params = array('applicationToken' => $applicationToken);
+
     if (isset($username) and isset($password)) {
       $params['username'] = $username;
       $params['password'] = $password;
@@ -200,6 +208,7 @@ class DwApi {
     if ($this->post('api.authenticate', $params, false)) {
       return $this->response['sessionId'];
     }
+
     return false;
   }
 
@@ -361,7 +370,7 @@ class DwApi {
      $params = array('to'      => $to,
                      'from'    => $from,
                      'message' => $message);
-     return $this->post('cloudsms.send', $params);
+     return $this->post('cloudsms.send', $params, false);
    }
 
 
@@ -381,7 +390,7 @@ class DwApi {
                      'from'    => $from,
                      'subject' => $subject,
                      'body'    => $body);
-     return $this->post('email.send', $params);
+     return $this->post('email.send', $params, false);
    }
 
 }
